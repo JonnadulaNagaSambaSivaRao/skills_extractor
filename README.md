@@ -1,156 +1,260 @@
-import os
-from typing import TypedDict
+# 🚀 Resume Skills & Keywords Extractor using LangGraph + Groq
 
-from dotenv import load_dotenv
+<p align="center">
 
-from langchain_groq import ChatGroq
-from langchain_core.prompts import ChatPromptTemplate
+![Python](https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge\&logo=python)
+![LangGraph](https://img.shields.io/badge/LangGraph-AI-success?style=for-the-badge)
+![LangChain](https://img.shields.io/badge/LangChain-Framework-green?style=for-the-badge)
+![Groq](https://img.shields.io/badge/Groq-LLM-orange?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-red?style=for-the-badge)
 
-from langgraph.graph import StateGraph, START, END
+</p>
 
-load_dotenv()
+---
 
-# ---------------------------
-# Create LLM
-# ---------------------------
+# 📌 Project Overview
 
-llm = ChatGroq(
-    model="llama-3.3-70b-versatile",
-    api_key=os.getenv("GROQ_API_KEY")
-)
+This project is an **ATS Resume Skills & Keywords Extractor** built using **LangGraph**, **LangChain**, and **Groq LLM**.
 
-# ---------------------------
-# Prompt
-# ---------------------------
+The application analyzes a **Resume** or **Job Description** and extracts **only the skills and keywords explicitly mentioned** in the text.
 
-prompt = ChatPromptTemplate.from_messages(
-    [
-        (
-            "system",
-            """
-You are an ATS Resume Parser.
+Unlike AI-based inference systems, this project **does not generate or predict additional skills**. It extracts only the information present in the input.
 
-Your task is to extract ONLY the skills and important keywords that are explicitly mentioned in the given text.
+---
 
-Rules:
-- Do NOT infer skills.
-- Do NOT add missing skills.
-- Do NOT explain anything.
-- Do NOT rewrite the skills.
-- Keep the original wording.
-- Remove duplicates.
+# ✨ Features
 
-Return ONLY in this format.
+* ✅ Exact Skills Extraction
+* ✅ Exact Keywords Extraction
+* ✅ Uses LangGraph Workflow
+* ✅ Uses Groq Llama 3.3 70B Model
+* ✅ Generates Workflow Image (`graph.png`)
+* ✅ Step-by-Step Terminal Execution
+* ✅ Removes Duplicate Skills
+* ✅ ATS-Friendly Output
 
+---
+
+# 🛠 Technologies Used
+
+| Technology       | Purpose               |
+| ---------------- | --------------------- |
+| 🐍 Python        | Programming Language  |
+| 🧠 LangGraph     | Workflow Management   |
+| 🔗 LangChain     | Prompt Chaining       |
+| ⚡ Groq API       | Large Language Model  |
+| 🔐 python-dotenv | Environment Variables |
+
+---
+
+# 📂 Project Structure
+
+```text
+Resume-Skills-Extractor/
+│
+├── main.py
+├── .env
+├── requirements.txt
+├── graph.png
+└── README.md
+```
+
+---
+
+# ⚙ Installation
+
+### 1️⃣ Clone Repository
+
+```bash
+git clone https://github.com/your-username/Resume-Skills-Extractor.git
+
+cd Resume-Skills-Extractor
+```
+
+---
+
+### 2️⃣ Create Virtual Environment
+
+```bash
+python -m venv .venv
+```
+
+Activate
+
+**Windows**
+
+```bash
+.venv\Scripts\activate
+```
+
+**Linux / Mac**
+
+```bash
+source .venv/bin/activate
+```
+
+---
+
+### 3️⃣ Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+or
+
+```bash
+pip install langgraph
+pip install langchain
+pip install langchain-groq
+pip install python-dotenv
+pip install graphviz
+```
+
+---
+
+### 4️⃣ Create `.env`
+
+```text
+GROQ_API_KEY=your_groq_api_key
+```
+
+---
+
+# ▶️ Run the Project
+
+```bash
+python main.py
+```
+
+---
+
+# 🖥 Example Input
+
+```text
+Python Developer with experience in Python, FastAPI, SQLAlchemy, MySQL, Docker, Git, LangChain, LangGraph and REST API Development.
+```
+
+---
+
+# 📤 Example Output
+
+```text
 Skills:
-- Skill 1
-- Skill 2
-- Skill 3
+- Python
+- FastAPI
+- SQLAlchemy
+- MySQL
+- Docker
+- Git
+- LangChain
+- LangGraph
 
 Keywords:
-- Keyword 1
-- Keyword 2
-- Keyword 3
+- Python Developer
+- REST API Development
+```
 
-If nothing is found return
+---
+
+# 🔄 LangGraph Workflow
+
+```mermaid
+graph TD
+
+A(Start)
+-->B[Read Resume]
+
+B-->C[Extract Skills]
+
+C-->D[Generate Output]
+
+D-->E(End)
+```
+
+---
+
+# 💻 Terminal Execution
+
+```text
+==================================================
+      Resume Skills Extractor
+==================================================
+
+Graph saved as graph.png
+
+Enter Resume or Job Description
+
+Python Developer with experience in Python...
+
+==============================
+Step 1 : Extracting Skills...
+==============================
+
+✓ Extraction Completed
+
+==============================
+Extraction Result
+==============================
 
 Skills:
-No skills found
+- Python
+- FastAPI
+- SQLAlchemy
+- MySQL
+- Docker
+- Git
+- LangChain
+- LangGraph
 
 Keywords:
-No keywords found
-"""
-        ),
-        (
-            "human",
-            """
-Text:
+- Python Developer
+- REST API Development
+```
 
-{text}
-"""
-        )
-    ]
-)
+---
 
-chain = prompt | llm
+# 📊 Output
 
-# ---------------------------
-# State
-# ---------------------------
+The project generates:
 
-class ResumeState(TypedDict):
-    text: str
-    result: str
+* 📄 Skills List
+* 📄 Keywords List
+* 🖼 Workflow Image (`graph.png`)
 
-# ---------------------------
-# Node
-# ---------------------------
+---
 
-def extract_skills(state: ResumeState):
+# 📦 Requirements
 
-    print("\n==============================")
-    print("Step 1 : Extracting Skills...")
-    print("==============================")
+```text
+langgraph
+langchain
+langchain-groq
+python-dotenv
+graphviz
+```
 
-    response = chain.invoke(
-        {
-            "text": state["text"]
-        }
-    )
+---
 
-    print("✓ Extraction Completed")
+# 📈 Future Improvements
 
-    return {
-        "result": response.content
-    }
+* 📄 PDF Resume Upload
+* 📑 DOCX Resume Support
+* 🌐 Streamlit Web Interface
+* ⚡ FastAPI REST API
+* 📊 Export Results to CSV
+* 📁 Export Results to JSON
 
-# ---------------------------
-# Build Graph
-# ---------------------------
+---
 
-graph = StateGraph(ResumeState)
+# 👨‍💻 Author
 
-graph.add_node("Extract Skills", extract_skills)
+**Jonnadula Naga Samba Siva Rao**
 
-graph.add_edge(START, "Extract Skills")
-graph.add_edge("Extract Skills", END)
+---
 
-app = graph.compile()
+# ⭐ If you like this project
 
-# ---------------------------
-# Save Graph Image
-# ---------------------------
+Give it a ⭐ on GitHub and share it with others!
 
-try:
-    png = app.get_graph().draw_mermaid_png()
-
-    with open("graph.png", "wb") as f:
-        f.write(png)
-
-    print("\nGraph saved as graph.png")
-
-except Exception as e:
-    print("\nGraph image could not be created.")
-    print(e)
-
-# ---------------------------
-# Run
-# ---------------------------
-
-print("=" * 50)
-print("      Resume Skills Extractor")
-print("=" * 50)
-
-text = input("\nEnter Resume or Job Description:\n\n")
-
-result = app.invoke(
-    {
-        "text": text
-    }
-)
-
-print("\n==============================")
-print("Extraction Result")
-print("==============================\n")
-
-print(result["result"])
+**Happy Coding! 🚀**
